@@ -1,5 +1,6 @@
+use std::time::{SystemTime, UNIX_EPOCH};
+use chrono;
 use std::{collections::HashMap, thread, time::Duration};
-use alert::AlertWindow;
 use wgpu_text::glyph_brush::{BuiltInLineBreaker, Layout, Section, Text};
 use wgpu_text::*;
 use winit::event_loop::EventLoopBuilder;
@@ -9,12 +10,30 @@ use winit::{
     window::{Window, WindowId},
 };
 
+
+use alert::AlertWindow;
+
 mod alert;
 
 #[derive(Clone, Copy)]
 pub enum Theme {
     Dark,
     Light,
+}
+
+impl Theme {
+    pub fn adaptive() -> Theme {
+        let mut dt = chrono::Local::now().time().to_string();
+        dt.replace_range(2..dt.len(), "");
+        let hours: u32 = dt.parse::<u32>().unwrap();
+        println!("Hours: {}", hours);
+        if hours < 6 || hours > 18 {
+            Theme::Dark
+        } else {
+            Theme::Light
+        }
+        
+    }
 }
 
 //#[derive(Debug, Clone)]
@@ -195,16 +214,24 @@ pub async fn run(event_loop: EventLoop<CustomEvents>) {
 
 fn main() {
     println!("Reminder v0.1");
-    // let event_loop = winit::event_loop::EventLoop::new().unwrap();
-    let string =
-        "The first method is the simplest, and will give you default values for everything.";
-    let theme = Theme::Light;
 
     let event_loop = EventLoopBuilder::<CustomEvents>::with_user_event().build().unwrap();
     let event_loop_proxy = event_loop.create_proxy();
+
     thread::spawn(move || {
         thread::sleep(Duration::from_secs(5));
-        event_loop_proxy.send_event(CustomEvents::CreateAlert("".to_string(), Theme::Light)).ok();
+        //let refr = event_loop_proxy.clone();
+        //thread::spawn(move || {
+        //    loop {
+        //        refr.send_event(CustomEvents::CreateAlert("Check Pump".to_string(), Theme::Light)).ok();
+        //        thread::sleep(Duration::from_secs(1800))
+        //    }
+        //});
+        loop {
+            event_loop_proxy.send_event(CustomEvents::CreateAlert("Check ".to_string(), Theme::adaptive())).ok();
+            thread::sleep(Duration::from_secs(1800))
+        }
+        
     });
 
     pollster::block_on(run(event_loop))
