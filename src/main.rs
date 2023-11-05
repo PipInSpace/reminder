@@ -2,6 +2,7 @@ use std::{collections::HashMap, thread, time::Duration};
 use alert::AlertWindow;
 use wgpu_text::glyph_brush::{BuiltInLineBreaker, Layout, Section, Text};
 use wgpu_text::*;
+use winit::event_loop::EventLoopBuilder;
 use winit::{
     event::{Event, WindowEvent},
     event_loop::EventLoop,
@@ -16,7 +17,12 @@ pub enum Theme {
     Light,
 }
 
-pub async fn run(event_loop: EventLoop<()>) {
+//#[derive(Debug, Clone)]
+pub enum CustomEvents {
+    CreateAlert(String, Theme)
+}
+
+pub async fn run(event_loop: EventLoop<CustomEvents>) {
     let mut alert_windows: HashMap<WindowId, AlertWindow> = HashMap::new();
     let instance = wgpu::Instance::default();
     //let window = alert::create_alert(string, theme, &event_loop);
@@ -55,12 +61,18 @@ pub async fn run(event_loop: EventLoop<()>) {
             // the resources are properly cleaned up.
             let _ = (&instance, &adapter);
 
-            if let Event::WindowEvent {
-                window_id,
-                event,
-            } = event
-            {
-                match event {
+            match event {
+                Event::UserEvent(user_event) => {
+                    match user_event {
+                        CustomEvents::CreateAlert(string, theme) => {
+                            let alert_window =alert::create_alert(string, theme, target, &adapter, &device, &instance);
+                            println!("Opened a new window: {:?}", alert_window.window.id());
+                            alert_windows.insert(alert_window.window.id(), alert_window);
+                        }
+                    }
+                }, 
+                Event::WindowEvent{window_id, event} => {
+                    match event {
                     WindowEvent::Resized(new_size) => {
                         let alert_window = alert_windows.get_mut(&window_id).expect("Could not retrieve alert_window");
                         alert::resize(&mut alert_window.config, &mut alert_window.surface, &device, new_size);
@@ -162,14 +174,20 @@ pub async fn run(event_loop: EventLoop<()>) {
                         queue.submit(Some(encoder.finish()));
                         frame.present();
                     }
-                    WindowEvent::CloseRequested => target.exit(),
+                    WindowEvent::CloseRequested => {
+                        alert_windows.remove(&window_id);
+                    },
                     WindowEvent::MouseInput {
                         device_id: _,
                         state: _,
                         button: _,
-                    } => target.exit(),
+                    } => {
+                        alert_windows.remove(&window_id);
+                    },
                     _ => {}
                 }
+                }
+                _ => {}
             }
         })
         .unwrap();
@@ -182,7 +200,12 @@ fn main() {
         "The first method is the simplest, and will give you default values for everything.";
     let theme = Theme::Light;
 
-    let event_loop = winit::event_loop::EventLoop::new().unwrap();
+    let event_loop = EventLoopBuilder::<CustomEvents>::with_user_event().build().unwrap();
+    let event_loop_proxy = event_loop.create_proxy();
+    thread::spawn(move || {
+        thread::sleep(Duration::from_secs(5));
+        event_loop_proxy.send_event(CustomEvents::CreateAlert("".to_string(), Theme::Light)).ok();
+    });
 
     pollster::block_on(run(event_loop))
 }

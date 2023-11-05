@@ -25,9 +25,9 @@ pub fn resize(
 }
 
 pub fn create_alert(
-    string: &str,
+    string: String,
     theme: Theme,
-    event_loop: &EventLoop<()>,
+    event_loop: &winit::event_loop::EventLoopWindowTarget<crate::CustomEvents>,
     adapter: &wgpu::Adapter,
     device: &wgpu::Device,
     instance: &wgpu::Instance,
@@ -63,7 +63,6 @@ pub fn create_alert(
         .with_transparent(true)
         .with_title(format!("Reminder: {}", string))
         .with_inner_size(winit::dpi::PhysicalSize::new(WINDOW_WIDTH, WINDOW_HEIGHT))
-        .with_visible(false)
         .build(&event_loop)
         .unwrap();
     window.set_outer_position(winit::dpi::PhysicalPosition::new(
@@ -93,7 +92,7 @@ pub fn create_alert(
         config,
         background_color,
         font_color,
-        reminder_string: string.to_string(),
+        reminder_string: string,
     }
     //run(event_loop, window, theme);
     //pollster::block_on(run(event_loop, window, string, theme));
