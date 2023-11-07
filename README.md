@@ -7,6 +7,6 @@ By default, window appearance adaptes to the time of day (light and dark theme)
 
 These are the Themes:
 <div style="width: 100%">
-    <img style="width: 50%" alt="Dark Theme" src="img/Theme_Dark.png">
-    <img style="width: 50%" alt="Light Theme" src="img/Theme_Light.png">
+    <img style="width: 49%" alt="Dark Theme" src="img/Theme_Dark.png">
+    <img style="width: 49%" alt="Light Theme" src="img/Theme_Light.png">
 </div>
