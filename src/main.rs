@@ -28,8 +28,7 @@ impl Theme {
         let mut dt = chrono::Local::now().time().to_string();
         dt.replace_range(2..dt.len(), "");
         let hours: u32 = dt.parse::<u32>().unwrap();
-        println!("Hours: {}", hours);
-        if hours < 6 || hours > 18 {
+        if hours < 6 || hours > 17 {
             Theme::Dark
         } else {
             Theme::Light
@@ -95,7 +94,6 @@ pub async fn run(event_loop: EventLoop<CustomEvents>) {
                         let alert_window = alert::create_alert(
                             string, theme, target, &adapter, &device, &instance,
                         );
-                        println!("Opened a new window: {:?}", alert_window.window.id());
                         alert_windows.insert(alert_window.window.id(), alert_window);
                     }
                 },

@@ -26,7 +26,6 @@ pub fn read_from_file() -> Vec<Reminder> {
                 let mut hours: u32 = 0;
                 if line_vec_len == 2 {
                     // In seconds
-                    println!("{}", line_vec[1]);
                     seconds = sanitise_to_u32(line_vec[1]);
                 } else if line_vec_len == 3 {
                     // In Minutes, Seconds
@@ -41,7 +40,7 @@ pub fn read_from_file() -> Vec<Reminder> {
 
                 let every = seconds + (minutes * 60) + (hours * 60 * 60);
                 if every > 0 {
-                    println!("Reminder: {}, {}, {}", string, repeating, every);
+                    println!("Reminder: {}, repeating: {}, every {}s", string, repeating, every);
                     let duration_until = Duration::from_secs(every.into());
                     reminders.push(Reminder {
                         string,
