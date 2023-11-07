@@ -1,0 +1,7 @@
+/ Format: 
+/ Check x: 1:30:0 = Reminder of "Check x" every 1Hour 30Minutes 0Seconds
+/ Check x: 30:0 = Reminder of "Check x" every 30Minutes 0Seconds
+/ Check x: 30 = Reminder of "Check x" every 30Seconds
+/ Check x: 30N = Reminder of "Check x" after 30Seconds, nonrepeating
+Check x: 10N
+Check y: 20

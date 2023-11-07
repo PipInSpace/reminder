@@ -1,8 +1,5 @@
-use winit::{
-    event_loop::EventLoop,
-    window::Window,
-};
 use crate::Theme;
+use winit::window::Window;
 
 pub struct AlertWindow {
     pub window: Window,
