@@ -1,5 +1,5 @@
 use crate::Theme;
-use winit::window::Window;
+use winit::window::{Window, WindowButtons, WindowLevel};
 
 pub struct AlertWindow {
     pub window: Window,
@@ -58,6 +58,10 @@ pub fn create_alert(
     let window = winit::window::WindowBuilder::new()
         .with_blur(true)
         .with_transparent(true)
+        .with_resizable(false)
+        .with_decorations(false)
+        .with_enabled_buttons(WindowButtons::empty())
+        .with_window_level(WindowLevel::AlwaysOnTop)
         .with_title(format!("Reminder: {}", string))
         .with_inner_size(winit::dpi::PhysicalSize::new(WINDOW_WIDTH, WINDOW_HEIGHT))
         .build(&event_loop)
