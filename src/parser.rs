@@ -58,11 +58,15 @@ pub fn read_from_file() -> Vec<Reminder> {
 }
 
 fn sanitise_to_u32(string: &str) -> u32 {
-    let mut new_string = String::new();
+    let mut digits = String::new();
     for ch in string.chars() {
         if ch.is_digit(10) {
-            new_string.push(ch);
+            digits.push(ch);
         }
     }
-    new_string.parse::<u32>().unwrap()
+    if digits.len() >= 1 {
+        digits.parse::<u32>().unwrap()
+    } else {
+        0 // No digits found
+    }
 }

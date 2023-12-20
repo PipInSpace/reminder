@@ -1,4 +1,3 @@
-use crate::Theme;
 use winit::window::Window;
 
 pub struct AlertWindow {
@@ -8,6 +7,25 @@ pub struct AlertWindow {
     pub background_color: wgpu::Color,
     pub font_color: [f32; 4],
     pub reminder_string: String,
+}
+
+#[derive(Clone, Copy)]
+pub enum Theme {
+    Dark,
+    Light,
+}
+
+impl Theme {
+    pub fn adaptive() -> Theme {
+        let mut dt = chrono::Local::now().time().to_string();
+        dt.replace_range(2..dt.len(), "");
+        let hours: u32 = dt.parse::<u32>().unwrap();
+        if hours < 6 || hours > 17 {
+            Theme::Dark
+        } else {
+            Theme::Light
+        }
+    }
 }
 
 pub fn resize(

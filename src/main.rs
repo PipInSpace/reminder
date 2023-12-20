@@ -1,5 +1,4 @@
-//#![windows_subsystem = "windows"]
-use chrono;
+#![windows_subsystem = "windows"]
 use std::time::Instant;
 use std::{collections::HashMap, thread, time::Duration};
 use wgpu_text::glyph_brush::{BuiltInLineBreaker, Layout, Section, Text};
@@ -11,30 +10,13 @@ use winit::{
     window::WindowId,
 };
 
-use crate::parser::read_from_file;
+use crate::{parser::read_from_file, alert::Theme};
 use alert::AlertWindow;
 
 mod alert;
 mod parser;
 
-#[derive(Clone, Copy)]
-pub enum Theme {
-    Dark,
-    Light,
-}
 
-impl Theme {
-    pub fn adaptive() -> Theme {
-        let mut dt = chrono::Local::now().time().to_string();
-        dt.replace_range(2..dt.len(), "");
-        let hours: u32 = dt.parse::<u32>().unwrap();
-        if hours < 6 || hours > 17 {
-            Theme::Dark
-        } else {
-            Theme::Light
-        }
-    }
-}
 
 pub struct Reminder {
     string: String, // Reminder message
