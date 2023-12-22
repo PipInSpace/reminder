@@ -226,7 +226,6 @@ fn main() {
     let event_loop_proxy = event_loop.create_proxy();
 
     thread::spawn(move || {
-        thread::sleep(Duration::from_secs(1));
         loop {
             for reminder in &mut reminders {
                 if now.elapsed() > reminder.duration_until && !reminder.triggered {

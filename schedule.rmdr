@@ -3,5 +3,7 @@
 / Do something: 30:0 = Reminder for "Do something" every 30Minutes 0Seconds
 / Update y: 30       = Reminder for "Update y" every 30Seconds
 / Check x: 30N       = Reminder for "Check x" after 30Seconds, nonrepeating
+/ The max intervall for reminders to appear is 5 seconds for performance and safety reasons
+Check this immeadiatly: 0N
 Check x: 10N
 Check y: 30:0

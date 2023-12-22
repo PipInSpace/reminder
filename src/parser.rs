@@ -39,7 +39,7 @@ pub fn read_from_file() -> Vec<Reminder> {
                 }
 
                 let every = seconds + (minutes * 60) + (hours * 60 * 60);
-                if every > 0 {
+                if every > 0 || !repeating {
                     println!("Reminder: {}, repeating: {}, every {}s", string, repeating, every);
                     let duration_until = Duration::from_secs(every.into());
                     reminders.push(Reminder {
